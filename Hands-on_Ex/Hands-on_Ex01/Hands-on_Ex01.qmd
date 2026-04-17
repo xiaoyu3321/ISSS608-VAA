@@ -27,3 +27,254 @@ ggplot(data = exam_data,
   geom_bar()
 
 ```
+
+# **R Graphics VS ggplot**
+
+## **R Graphics**
+
+```{r}
+exam_data$MATHS <- as.numeric(exam_data$MATHS)
+hist(exam_data$MATHS)
+```
+
+## **ggplot**
+
+```{r}
+ggplot(data=exam_data, aes(x = MATHS)) +
+  geom_histogram(bins=10, 
+                 boundary = 100,
+                 color="black", 
+                 fill="grey") +
+  ggtitle("Distribution of Maths scores")
+```
+
+# **Essential Grammatical Elements in ggplot2**
+
+## Call the `ggplot()` function
+
+```{r}
+ggplot(data=exam_data)
+```
+
+## Adds the aesthetic element
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS))
+```
+
+## Plot a bar chart using `geom_bar()`
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar()
+```
+
+## Plot a dot plot using [`geom_dotplot()`](https://ggplot2.tidyverse.org/reference/geom_dotplot.html)
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot(binwidth=2.5,         
+               dotsize = 0.5) +      
+  scale_y_continuous(NULL,           
+                     breaks = NULL) 
+```
+
+## Create a simple histogram using [*geom_histogram()*](https://ggplot2.tidyverse.org/reference/geom_histogram.html)
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_histogram() 
+```
+
+## **Modifying a geometric object by changing `geom()`**
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS)) +
+  geom_histogram(bins=20,            
+                 color="black",      
+                 fill="light blue") 
+```
+
+## **Modifying a geometric object by changing *aes()***
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           fill = GENDER)) +
+  geom_histogram(bins=20, 
+                 color="grey30")
+```
+
+## Plot the distribution of Maths scores using [`geom-density()`](https://ggplot2.tidyverse.org/reference/geom_density.html)
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_density()  
+```
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x = MATHS, 
+           colour = GENDER)) +
+  geom_density()
+```
+
+## Plot boxplots using [`geom_boxplot()`](https://ggplot2.tidyverse.org/reference/geom_boxplot.html)
+
+```{r}
+ggplot(data=exam_data, 
+       aes(y = MATHS,       
+           x= GENDER)) +    
+  geom_boxplot() 
+```
+
+```{r}
+ggplot(data=exam_data, 
+       aes(y = MATHS, 
+           x= GENDER)) +
+  geom_boxplot(notch=TRUE)
+```
+
+## Plot the distribution of Maths score by gender using [`geom_violin`](https://ggplot2.tidyverse.org/reference/geom_violin.html)
+
+```{r}
+ggplot(data=exam_data, 
+       aes(y = MATHS, 
+           x= GENDER)) +
+  geom_violin()
+```
+
+## Plot scatterplot using `geom_point()`
+
+```{r}
+exam_data$ENGLISH <- as.numeric(exam_data$ENGLISH)
+
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point() +
+  scale_y_continuous(breaks = seq(0, 100, by = 20))
+```
+
+## Plot the data points on the boxplots by using both `geom_boxplot()` and `geom_point()`
+
+```{r}
+ggplot(data=exam_data, 
+       aes(y = MATHS, 
+           x= GENDER)) +
+  geom_boxplot() +                    
+  geom_point(position="jitter", 
+             size = 0.5)        
+```
+
+## Add mean values by using [`stat_summary()`](https://ggplot2.tidyverse.org/reference/stat_summary.html)
+
+```{r}
+ggplot(data=exam_data, 
+       aes(y = MATHS, x= GENDER)) +
+  geom_boxplot() +
+  stat_summary(geom = "point",       
+               fun = "mean",         
+               colour ="red",        
+               size=4)               
+```
+
+```{r}
+ggplot(data=exam_data, 
+       aes(y = MATHS, x= GENDER)) +
+  geom_boxplot() +
+  geom_point(stat="summary",        
+             fun="mean",           
+             colour="red",          
+             size=4)          
+```
+
+## **Adding a best fit curve on a scatterplot**
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(size=0.5)
+```
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              linewidth=0.5)
+```
+
+## **Working with `facet_wrap()`**
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS)) +
+  geom_histogram(bins=20) +
+    facet_wrap(~ CLASS)
+```
+
+## Plot a trellis plot using `facet_grid()`
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS)) +
+  geom_histogram(bins=20) +
+  facet_grid(~ CLASS) +
+  scale_x_continuous(breaks = seq(0, 100, by = 40))
+```
+
+## Flip the horizontal bar chart into vertical bar chart by using `coord_flip()`
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar() +
+  coord_flip()
+```
+
+## Fix both the y-axis and x-axis range from 0-100
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5) +  
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100))
+```
+
+## Plot a horizontal bar chart using `theme_gray()`
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar() +
+  coord_flip() +
+  theme_gray()
+```
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar() +
+  coord_flip() +
+  theme_classic()
+```
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar() +
+  coord_flip() +
+  theme_minimal()
+```
