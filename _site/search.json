@@ -7,18 +7,11 @@
     "text": "About this site\n\n1 + 1\n\n[1] 2"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "ISSS608-VAA",
-    "section": "",
-    "text": "Welcome to ISSS608 Visual Analytics and Application homepage. In this website, you will find my coursework prepared for this course."
-  },
-  {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html",
     "title": "Hands-on Exercise 1",
     "section": "",
-    "text": "The code chunk below uses p_load() of pacman package to check if tidyverse packages are installed in this computer. If they are,then they will be launched into R.\n\npacman::p_load(tidyverse)\n\n\n\n\n\nexam_data &lt;- read_csv(\"data/Exam_data.csv\")\n\nRows: 324 Columns: 8\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (7): CLASS, NAME, GENDER, RACE, ENGLISH, MATHS, SCIENCE\ndbl (1): S/N\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\n\n\n\n\nggplot(data = exam_data, \n       aes(x = fct_infreq(RACE))) + \n  geom_bar()"
+    "text": "The code chunk below uses p_load() of pacman package to check if tidyverse packages are installed in this computer. If they are,then they will be launched into R.\n\npacman::p_load(tidyverse)\n\n\n\nexam_data &lt;- read_csv(\"data/Exam_data.csv\")\n\n\n\nggplot(data = exam_data, \n       aes(x = fct_infreq(RACE))) + \n  geom_bar()"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#install-and-launching-r-packages",
@@ -32,7 +25,7 @@
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#importing-the-data",
     "title": "Hands-on Exercise 1",
     "section": "",
-    "text": "exam_data &lt;- read_csv(\"data/Exam_data.csv\")\n\nRows: 324 Columns: 8\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (7): CLASS, NAME, GENDER, RACE, ENGLISH, MATHS, SCIENCE\ndbl (1): S/N\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+    "text": "exam_data &lt;- read_csv(\"data/Exam_data.csv\")"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plotting-a-simple-bar-chart",
@@ -42,25 +35,18 @@
     "text": "ggplot(data = exam_data, \n       aes(x = fct_infreq(RACE))) + \n  geom_bar()"
   },
   {
-    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#r-graphics-vs-ggplot",
-    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#r-graphics-vs-ggplot",
-    "title": "Hands-on Exercise 1",
-    "section": "",
-    "text": "exam_data$MATHS &lt;- as.numeric(exam_data$MATHS)\n\nWarning: NAs introduced by coercion\n\nhist(exam_data$MATHS)\n\n\n\n\n\n\n\n\n\n\n\n\nggplot(data=exam_data, aes(x = MATHS)) +\n  geom_histogram(bins=10, \n                 boundary = 100,\n                 color=\"black\", \n                 fill=\"grey\") +\n  ggtitle(\"Distribution of Maths scores\")\n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_bin()`)."
-  },
-  {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#r-graphics",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#r-graphics",
     "title": "Hands-on Exercise 1",
     "section": "R Graphics",
-    "text": "R Graphics\n\nexam_data$MATHS &lt;- as.numeric(exam_data$MATHS)\n\nWarning: NAs introduced by coercion\n\nhist(exam_data$MATHS)"
+    "text": "R Graphics\n\nexam_data$MATHS &lt;- as.numeric(exam_data$MATHS)\nhist(exam_data$MATHS)"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#ggplot",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#ggplot",
     "title": "Hands-on Exercise 1",
     "section": "ggplot",
-    "text": "ggplot\n\nggplot(data=exam_data, aes(x = MATHS)) +\n  geom_histogram(bins=10, \n                 boundary = 100,\n                 color=\"black\", \n                 fill=\"grey\") +\n  ggtitle(\"Distribution of Maths scores\")\n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_bin()`)."
+    "text": "ggplot\n\nggplot(data=exam_data, aes(x = MATHS)) +\n  geom_histogram(bins=10, \n                 boundary = 100,\n                 color=\"black\", \n                 fill=\"grey\") +\n  ggtitle(\"Distribution of Maths scores\")"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#call-the-ggplot-function",
@@ -80,119 +66,126 @@
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-a-bar-chart-using-geom_bar",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-a-bar-chart-using-geom_bar",
     "title": "Hands-on Exercise 1",
-    "section": "Plot a bar chart using geom_bar()",
-    "text": "Plot a bar chart using geom_bar()\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar()"
+    "section": "Plot a bar chart using geom_bar()\n",
+    "text": "Plot a bar chart using geom_bar()\n\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar()"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-a-dot-plot-using-geom_dotplot",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-a-dot-plot-using-geom_dotplot",
     "title": "Hands-on Exercise 1",
-    "section": "Plot a dot plot using geom_dotplot()",
-    "text": "Plot a dot plot using geom_dotplot()\n\nggplot(data=exam_data, \n       aes(x = MATHS)) +\n  geom_dotplot(binwidth=2.5,         \n               dotsize = 0.5) +      \n  scale_y_continuous(NULL,           \n                     breaks = NULL) \n\nWarning: Removed 1 row containing missing values or values outside the scale range\n(`stat_bindot()`)."
+    "section": "Plot a dot plot using geom_dotplot()\n",
+    "text": "Plot a dot plot using geom_dotplot()\n\n\nggplot(data=exam_data, \n       aes(x = MATHS)) +\n  geom_dotplot(binwidth=2.5,         \n               dotsize = 0.5) +      \n  scale_y_continuous(NULL,           \n                     breaks = NULL)"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#create-a-simple-histogram-using-geom_histogram",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#create-a-simple-histogram-using-geom_histogram",
     "title": "Hands-on Exercise 1",
-    "section": "Create a simple histogram using geom_histogram()",
-    "text": "Create a simple histogram using geom_histogram()\n\nggplot(data=exam_data, \n       aes(x = MATHS)) +\n  geom_histogram() \n\n`stat_bin()` using `bins = 30`. Pick better value `binwidth`.\n\n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_bin()`)."
+    "section": "Create a simple histogram using geom_histogram()\n",
+    "text": "Create a simple histogram using geom_histogram()\n\n\nggplot(data=exam_data, \n       aes(x = MATHS)) +\n  geom_histogram()"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#modifying-a-geometric-object-by-changing-geom",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#modifying-a-geometric-object-by-changing-geom",
     "title": "Hands-on Exercise 1",
     "section": "Modifying a geometric object by changing geom()",
-    "text": "Modifying a geometric object by changing geom()\n\nggplot(data=exam_data, \n       aes(x= MATHS)) +\n  geom_histogram(bins=20,            \n                 color=\"black\",      \n                 fill=\"light blue\") \n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_bin()`)."
+    "text": "Modifying a geometric object by changing geom()\n\nggplot(data=exam_data, \n       aes(x= MATHS)) +\n  geom_histogram(bins=20,            \n                 color=\"black\",      \n                 fill=\"light blue\")"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#modifying-a-geometric-object-by-changing-aes",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#modifying-a-geometric-object-by-changing-aes",
     "title": "Hands-on Exercise 1",
     "section": "Modifying a geometric object by changing aes()",
-    "text": "Modifying a geometric object by changing aes()\n\nggplot(data=exam_data, \n       aes(x= MATHS, \n           fill = GENDER)) +\n  geom_histogram(bins=20, \n                 color=\"grey30\")\n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_bin()`)."
+    "text": "Modifying a geometric object by changing aes()\n\nggplot(data=exam_data, \n       aes(x= MATHS, \n           fill = GENDER)) +\n  geom_histogram(bins=20, \n                 color=\"grey30\")"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-the-distribution-of-maths-scores-using-geom-density",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-the-distribution-of-maths-scores-using-geom-density",
     "title": "Hands-on Exercise 1",
-    "section": "Plot the distribution of Maths scores using geom-density()",
-    "text": "Plot the distribution of Maths scores using geom-density()\n\nggplot(data=exam_data, \n       aes(x = MATHS)) +\n  geom_density()  \n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_density()`).\n\n\n\n\n\n\n\n\n\n\nggplot(data=exam_data, \n       aes(x = MATHS, \n           colour = GENDER)) +\n  geom_density()\n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_density()`)."
+    "section": "Plot the distribution of Maths scores using geom-density()\n",
+    "text": "Plot the distribution of Maths scores using geom-density()\n\n\nggplot(data=exam_data, \n       aes(x = MATHS)) +\n  geom_density()  \n\n\n\n\n\n\n\n\nggplot(data=exam_data, \n       aes(x = MATHS, \n           colour = GENDER)) +\n  geom_density()"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-boxplots-using-geom_boxplot",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-boxplots-using-geom_boxplot",
     "title": "Hands-on Exercise 1",
-    "section": "Plot boxplots using geom_boxplot()",
-    "text": "Plot boxplots using geom_boxplot()\n\nggplot(data=exam_data, \n       aes(y = MATHS,       \n           x= GENDER)) +    \n  geom_boxplot() \n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_boxplot()`).\n\n\n\n\n\n\n\n\n\n\nggplot(data=exam_data, \n       aes(y = MATHS, \n           x= GENDER)) +\n  geom_boxplot(notch=TRUE)\n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_boxplot()`)."
+    "section": "Plot boxplots using geom_boxplot()\n",
+    "text": "Plot boxplots using geom_boxplot()\n\n\nggplot(data=exam_data, \n       aes(y = MATHS,       \n           x= GENDER)) +    \n  geom_boxplot() \n\n\n\n\n\n\n\n\nggplot(data=exam_data, \n       aes(y = MATHS, \n           x= GENDER)) +\n  geom_boxplot(notch=TRUE)"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-the-distribution-of-maths-score-by-gender-using-geom_violin",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-the-distribution-of-maths-score-by-gender-using-geom_violin",
     "title": "Hands-on Exercise 1",
-    "section": "Plot the distribution of Maths score by gender using geom_violin",
-    "text": "Plot the distribution of Maths score by gender using geom_violin\n\nggplot(data=exam_data, \n       aes(y = MATHS, \n           x= GENDER)) +\n  geom_violin()\n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_ydensity()`)."
+    "section": "Plot the distribution of Maths score by gender using geom_violin\n",
+    "text": "Plot the distribution of Maths score by gender using geom_violin\n\n\nggplot(data=exam_data, \n       aes(y = MATHS, \n           x= GENDER)) +\n  geom_violin()"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-scatterplot-using-geom_point",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-scatterplot-using-geom_point",
     "title": "Hands-on Exercise 1",
-    "section": "Plot scatterplot using geom_point()",
-    "text": "Plot scatterplot using geom_point()\n\nexam_data$ENGLISH &lt;- as.numeric(exam_data$ENGLISH)\n\nWarning: NAs introduced by coercion\n\nggplot(data=exam_data, \n       aes(x= MATHS, \n           y=ENGLISH)) +\n  geom_point() +\n  scale_y_continuous(breaks = seq(0, 100, by = 20))\n\nWarning: Removed 1 row containing missing values or values outside the scale range\n(`geom_point()`)."
+    "section": "Plot scatterplot using geom_point()\n",
+    "text": "Plot scatterplot using geom_point()\n\n\nexam_data$ENGLISH &lt;- as.numeric(exam_data$ENGLISH)\n\nggplot(data=exam_data, \n       aes(x= MATHS, \n           y=ENGLISH)) +\n  geom_point() +\n  scale_y_continuous(breaks = seq(0, 100, by = 20))"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-the-data-points-on-the-boxplots-by-using-both-geom_boxplot-and-geom_point",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-the-data-points-on-the-boxplots-by-using-both-geom_boxplot-and-geom_point",
     "title": "Hands-on Exercise 1",
-    "section": "Plot the data points on the boxplots by using both geom_boxplot() and geom_point()",
-    "text": "Plot the data points on the boxplots by using both geom_boxplot() and geom_point()\n\nggplot(data=exam_data, \n       aes(y = MATHS, \n           x= GENDER)) +\n  geom_boxplot() +                    \n  geom_point(position=\"jitter\", \n             size = 0.5)        \n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_boxplot()`).\n\n\nWarning: Removed 1 row containing missing values or values outside the scale range\n(`geom_point()`)."
+    "section": "Plot the data points on the boxplots by using both geom_boxplot() and geom_point()\n",
+    "text": "Plot the data points on the boxplots by using both geom_boxplot() and geom_point()\n\n\nggplot(data=exam_data, \n       aes(y = MATHS, \n           x= GENDER)) +\n  geom_boxplot() +                    \n  geom_point(position=\"jitter\", \n             size = 0.5)"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#add-mean-values-by-using-stat_summary",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#add-mean-values-by-using-stat_summary",
     "title": "Hands-on Exercise 1",
-    "section": "Add mean values by using stat_summary()",
-    "text": "Add mean values by using stat_summary()\n\nggplot(data=exam_data, \n       aes(y = MATHS, x= GENDER)) +\n  geom_boxplot() +\n  stat_summary(geom = \"point\",       \n               fun = \"mean\",         \n               colour =\"red\",        \n               size=4)               \n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_boxplot()`).\n\n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_summary()`).\n\n\n\n\n\n\n\n\n\n\nggplot(data=exam_data, \n       aes(y = MATHS, x= GENDER)) +\n  geom_boxplot() +\n  geom_point(stat=\"summary\",        \n             fun=\"mean\",           \n             colour=\"red\",          \n             size=4)          \n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_boxplot()`).\n\n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_summary()`)."
+    "section": "Add mean values by using stat_summary()\n",
+    "text": "Add mean values by using stat_summary()\n\n\nggplot(data=exam_data, \n       aes(y = MATHS, x= GENDER)) +\n  geom_boxplot() +\n  stat_summary(geom = \"point\",       \n               fun = \"mean\",         \n               colour =\"red\",        \n               size=4)               \n\n\n\n\n\n\n\n\nggplot(data=exam_data, \n       aes(y = MATHS, x= GENDER)) +\n  geom_boxplot() +\n  geom_point(stat=\"summary\",        \n             fun=\"mean\",           \n             colour=\"red\",          \n             size=4)"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#adding-a-best-fit-curve-on-a-scatterplot",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#adding-a-best-fit-curve-on-a-scatterplot",
     "title": "Hands-on Exercise 1",
     "section": "Adding a best fit curve on a scatterplot",
-    "text": "Adding a best fit curve on a scatterplot\n\nggplot(data=exam_data, \n       aes(x= MATHS, y=ENGLISH)) +\n  geom_point() +\n  geom_smooth(size=0.5)\n\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\n\n\n`geom_smooth()` using method = 'loess' and formula = 'y ~ x'\n\n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 1 row containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\n\nggplot(data=exam_data, \n       aes(x= MATHS, \n           y=ENGLISH)) +\n  geom_point() +\n  geom_smooth(method=lm, \n              linewidth=0.5)\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 1 row containing missing values or values outside the scale range\n(`geom_point()`)."
+    "text": "Adding a best fit curve on a scatterplot\n\nggplot(data=exam_data, \n       aes(x= MATHS, y=ENGLISH)) +\n  geom_point() +\n  geom_smooth(size=0.5)\n\n\n\n\n\n\n\n\nggplot(data=exam_data, \n       aes(x= MATHS, \n           y=ENGLISH)) +\n  geom_point() +\n  geom_smooth(method=lm, \n              linewidth=0.5)"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#working-with-facet_wrap",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#working-with-facet_wrap",
     "title": "Hands-on Exercise 1",
     "section": "Working with facet_wrap()",
-    "text": "Working with facet_wrap()\n\nggplot(data=exam_data, \n       aes(x= MATHS)) +\n  geom_histogram(bins=20) +\n    facet_wrap(~ CLASS)\n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_bin()`)."
+    "text": "Working with facet_wrap()\n\nggplot(data=exam_data, \n       aes(x= MATHS)) +\n  geom_histogram(bins=20) +\n    facet_wrap(~ CLASS)"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-a-trellis-plot-using-facet_grid",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-a-trellis-plot-using-facet_grid",
     "title": "Hands-on Exercise 1",
-    "section": "Plot a trellis plot using facet_grid()",
-    "text": "Plot a trellis plot using facet_grid()\n\nggplot(data=exam_data, \n       aes(x= MATHS)) +\n  geom_histogram(bins=20) +\n  facet_grid(~ CLASS) +\n  scale_x_continuous(breaks = seq(0, 100, by = 40))\n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_bin()`)."
+    "section": "Plot a trellis plot using facet_grid()\n",
+    "text": "Plot a trellis plot using facet_grid()\n\n\nggplot(data=exam_data, \n       aes(x= MATHS)) +\n  geom_histogram(bins=20) +\n  facet_grid(~ CLASS) +\n  scale_x_continuous(breaks = seq(0, 100, by = 40))"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#flip-the-horizontal-bar-chart-into-vertical-bar-chart-by-using-coord_flip",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#flip-the-horizontal-bar-chart-into-vertical-bar-chart-by-using-coord_flip",
     "title": "Hands-on Exercise 1",
-    "section": "Flip the horizontal bar chart into vertical bar chart by using coord_flip()",
-    "text": "Flip the horizontal bar chart into vertical bar chart by using coord_flip()\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar() +\n  coord_flip()"
+    "section": "Flip the horizontal bar chart into vertical bar chart by using coord_flip()\n",
+    "text": "Flip the horizontal bar chart into vertical bar chart by using coord_flip()\n\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar() +\n  coord_flip()"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#fix-both-the-y-axis-and-x-axis-range-from-0-100",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#fix-both-the-y-axis-and-x-axis-range-from-0-100",
     "title": "Hands-on Exercise 1",
     "section": "Fix both the y-axis and x-axis range from 0-100",
-    "text": "Fix both the y-axis and x-axis range from 0-100\n\nggplot(data=exam_data, \n       aes(x= MATHS, y=ENGLISH)) +\n  geom_point() +\n  geom_smooth(method=lm, \n              size=0.5) +  \n  coord_cartesian(xlim=c(0,100),\n                  ylim=c(0,100))\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 1 row containing missing values or values outside the scale range\n(`geom_point()`)."
+    "text": "Fix both the y-axis and x-axis range from 0-100\n\nggplot(data=exam_data, \n       aes(x= MATHS, y=ENGLISH)) +\n  geom_point() +\n  geom_smooth(method=lm, \n              size=0.5) +  \n  coord_cartesian(xlim=c(0,100),\n                  ylim=c(0,100))"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-a-horizontal-bar-chart-using-theme_gray",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plot-a-horizontal-bar-chart-using-theme_gray",
     "title": "Hands-on Exercise 1",
-    "section": "Plot a horizontal bar chart using theme_gray()",
-    "text": "Plot a horizontal bar chart using theme_gray()\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar() +\n  coord_flip() +\n  theme_gray()\n\n\n\n\n\n\n\n\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar() +\n  coord_flip() +\n  theme_classic()\n\n\n\n\n\n\n\n\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar() +\n  coord_flip() +\n  theme_minimal()"
+    "section": "Plot a horizontal bar chart using theme_gray()\n",
+    "text": "Plot a horizontal bar chart using theme_gray()\n\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar() +\n  coord_flip() +\n  theme_gray()\n\n\n\n\n\n\n\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar() +\n  coord_flip() +\n  theme_classic()\n\n\n\n\n\n\n\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar() +\n  coord_flip() +\n  theme_minimal()"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "ISSS608-VAA",
+    "section": "",
+    "text": "Welcome to ISSS608 Visual Analytics and Application homepage. In this website, you will find my coursework prepared for this course."
   }
 ]
