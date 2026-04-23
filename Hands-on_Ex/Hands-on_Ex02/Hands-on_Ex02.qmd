@@ -12,6 +12,8 @@ execute:
 
 # **Beyond ggplot2 Fundamentals**
 
+## 2.1 Overview
+
 This exercise focuses on mastering **ggplot2** extensions to create professional, publication-quality graphics with precise label placement and styling.
 
 Let's learn how to use **ggrepel**, **ggthemes**, and **hrbrthemes** for enhanced visuals, and **patchwork** to combine multiple plots into a single composite figure.
@@ -238,7 +240,7 @@ p3 <- ggplot(data=exam_data,
 p3
 ```
 
-### **2.5.1 Creating Composite Graphics: pathwork methods** 
+### **2.5.1 Creating Composite Graphics: pathwork methods**
 
 Now we try to combine p1,p2 and p3.
 

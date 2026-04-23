@@ -19,7 +19,7 @@ website:
 format:
   html:
     theme:
-      - journal
+      - yeti
       - brand
     css: styles.css
     toc: true
