@@ -2,4 +2,10 @@
 title: "ISSS608-VAA"
 ---
 
-Welcome to **ISSS608 Visual Analytics and Application** homepage. In this website, you will find my coursework prepared for this course.
+Welcome to **ISSS608 Visual Analytics and Application** homepage. In this website, you will find my coursework prepared for this course. All materials and assignments are based on the course taught by Professor Tin Seong Kam.
+
+![](images/picture1.jpeg){fig-align="center"}
+
+Data visualization is an essential skill for professional data analysts. It enables analytical results to be presented in a clear and intuitive way, allowing even those without a strong background in data analysis to quickly grasp key insights.
+
+Let’s start this exciting journey together. I hope everyone who visits this website can gain something valuable and meaningful from it.
