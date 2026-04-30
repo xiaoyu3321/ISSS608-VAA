@@ -3,11 +3,13 @@ title: "Hands-on Exercise 2"
 author: "ZHANG Xiaoyu"
 date: "April 22, 2026"
 date-modified: "April 23,2026"
+format: html
 code-link: true
 execute: 
   eval: true
   echo: true
   warning: false
+  freeze: true
 ---
 
 # **Beyond ggplot2 Fundamentals**
