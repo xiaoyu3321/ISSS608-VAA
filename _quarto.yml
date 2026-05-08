@@ -15,6 +15,14 @@ website:
           href: "Hands-on_Ex/Hands-on_Ex03A/Hands-on_Ex03A.html"
         - text: "Hands-on Exercise 3B"
           href: "Hands-on_Ex/Hands-on_Ex03B/Hands-on_Ex03B.html"
+        - text: "Hands-on Exercise 4A"
+          href: "Hands-on_Ex/Hands-on_Ex04A/Hands-on_Ex04A.html"
+        - text: "Hands-on Exercise 4B"
+          href: "Hands-on_Ex/Hands-on_Ex04B/Hands-on_Ex04B.html"  
+        - text: "Hands-on Exercise 4C"
+          href: "Hands-on_Ex/Hands-on_Ex04C/Hands-on_Ex04C.html"
+        - text: "Hands-on Exercise 4D"
+          href: "Hands-on_Ex/Hands-on_Ex04D/Hands-on_Ex04D.html" 
     right: 
       - href: index.qmd
         text: Home

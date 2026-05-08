@@ -1,0 +1,369 @@
+---
+title: "Hands-on Exercise 4A"
+author: "ZHANG Xiaoyu"
+date: "May 07, 2026"
+date-modified: "May 07,2026"
+format: html
+code-link: true
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+# **Visualising Distribution**
+
+In this chapter, we will learn two modern methods for visualising data distribution: **ridgeline plots** and **raincloud plots** using **ggplot2** and its extensions.
+
+## **1. Installing and loading the packages**
+
+```{r}
+pacman::p_load(ggdist, ggridges, ggthemes,
+               colorspace, tidyverse)
+```
+
+## **2. Data import**
+
+In this chapter we still use the *Exam_data.csv*
+
+```{r}
+exam_data <- read_csv("data/Exam_data.csv")
+```
+
+## **3. Visualising Distribution with Ridgeline Plot**
+
+There are different ways to create ridgeline plots in R. In this section, we use the **ggridges** package.The package provides two main functions:
+
+**（1）geom_ridgeline()**: uses height values directly
+**（2）geom_density_ridges()**: estimates data density before plotting
+
+The ridgeline plot below is created using **geom_density_ridges()**.
+
+::: panel-tabset
+### The plot
+
+```{r}
+exam_data$ENGLISH <- as.numeric(exam_data$ENGLISH)
+ggplot(exam_data, 
+       aes(x = ENGLISH, 
+           y = CLASS)) +
+  geom_density_ridges(
+    scale = 3,
+    rel_min_height = 0.01,
+    bandwidth = 3.4,
+    fill = lighten("#7097BB", .3),
+    color = "white"
+  ) +
+  scale_x_continuous(
+    name = "English grades",
+    expand = c(0, 0)
+    ) +
+  scale_y_discrete(name = NULL, expand = expansion(add = c(0.2, 2.6))) +
+  theme_ridges()
+```
+
+### The code chunk
+
+```{r}
+#| eval: false
+exam_data$ENGLISH <- as.numeric(exam_data$ENGLISH)
+ggplot(exam_data, 
+       aes(x = ENGLISH, 
+           y = CLASS)) +
+  geom_density_ridges(
+    scale = 3,
+    rel_min_height = 0.01,
+    bandwidth = 3.4,
+    fill = lighten("#7097BB", .3),
+    color = "white"
+  ) +
+  scale_x_continuous(
+    name = "English grades",
+    expand = c(0, 0)
+    ) +
+  scale_y_discrete(name = NULL, expand = expansion(add = c(0.2, 2.6))) +
+  theme_ridges()
+```
+:::
+
+### **Varying fill colors along the x axis**
+
+::: panel-tabset
+### The plot
+
+```{r}
+ggplot(exam_data, 
+       aes(x = ENGLISH, 
+           y = CLASS,
+           fill = stat(x))) +
+  geom_density_ridges_gradient(
+    scale = 3,
+    rel_min_height = 0.01) +
+  scale_fill_viridis_c(name = "Temp. [F]",
+                       option = "C") +
+  scale_x_continuous(
+    name = "English grades",
+    expand = c(0, 0)
+  ) +
+  scale_y_discrete(name = NULL, expand = expansion(add = c(0.2, 2.6))) +
+  theme_ridges()
+```
+
+### The code chunk
+
+```{r}
+#| eval: false
+exam_data$ENGLISH <- as.numeric(exam_data$ENGLISH)
+ggplot(exam_data, 
+       aes(x = ENGLISH, 
+           y = CLASS)) +
+  geom_density_ridges(
+    scale = 3,
+    rel_min_height = 0.01,
+    bandwidth = 3.4,
+    fill = lighten("#7097BB", .3),
+    color = "white"
+  ) +
+  scale_x_continuous(
+    name = "English grades",
+    expand = c(0, 0)
+    ) +
+  scale_y_discrete(name = NULL, expand = expansion(add = c(0.2, 2.6))) +
+  theme_ridges()
+```
+:::
+
+### **Mapping the probabilities directly onto colour**
+
+::: panel-tabset
+### The plot
+
+```{r}
+ggplot(exam_data,
+       aes(x = ENGLISH, 
+           y = CLASS, 
+           fill = 0.5 - abs(0.5-stat(ecdf)))) +
+  stat_density_ridges(geom = "density_ridges_gradient", 
+                      calc_ecdf = TRUE) +
+  scale_fill_viridis_c(name = "Tail probability",
+                       direction = -1) +
+  theme_ridges()
+```
+
+### The code chunk
+
+```{r}
+#| eval: false
+ggplot(exam_data,
+       aes(x = ENGLISH, 
+           y = CLASS, 
+           fill = 0.5 - abs(0.5-stat(ecdf)))) +
+  stat_density_ridges(geom = "density_ridges_gradient", 
+                      calc_ecdf = TRUE) +
+  scale_fill_viridis_c(name = "Tail probability",
+                       direction = -1) +
+  theme_ridges()
+```
+:::
+
+### **Ridgeline plots with quantile lines**
+
+::: panel-tabset
+### The plot
+
+```{r}
+ggplot(exam_data,
+       aes(x = ENGLISH, 
+           y = CLASS, 
+           fill = factor(stat(quantile))
+           )) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") +
+  theme_ridges()
+```
+
+### The code chunk
+
+```{r}
+#| eval: false
+ggplot(exam_data,
+       aes(x = ENGLISH, 
+           y = CLASS, 
+           fill = factor(stat(quantile))
+           )) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") +
+  theme_ridges()
+```
+:::
+
+Instead of using number to define the quantiles, we can also specify quantiles by cut points such as 2.5% and 97.5% tails to colour the ridgeline plot as shown in the figure below.
+
+::: panel-tabset
+### The plot
+
+```{r}
+ggplot(exam_data,
+       aes(x = ENGLISH, 
+           y = CLASS, 
+           fill = factor(stat(quantile))
+           )) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = c(0.025, 0.975)
+    ) +
+  scale_fill_manual(
+    name = "Probability",
+    values = c("#FF0000A0", "#A0A0A0A0", "#0000FFA0"),
+    labels = c("(0, 0.025]", "(0.025, 0.975]", "(0.975, 1]")
+  ) +
+  theme_ridges()
+```
+
+### The code chunk
+
+```{r}
+#| eval: false
+ggplot(exam_data,
+       aes(x = ENGLISH, 
+           y = CLASS, 
+           fill = factor(stat(quantile))
+           )) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = c(0.025, 0.975)
+    ) +
+  scale_fill_manual(
+    name = "Probability",
+    values = c("#FF0000A0", "#A0A0A0A0", "#0000FFA0"),
+    labels = c("(0, 0.025]", "(0.025, 0.975]", "(0.975, 1]")
+  ) +
+  theme_ridges()
+```
+:::
+
+## **4. Visualising Distribution with Raincloud Plot**
+
+A Raincloud Plot is a way to show data distribution. It shows a half-density curve that looks like a raincloud.
+
+It improves the boxplot because it shows where data is concentrated. It can also show if there are different groups in the data. A boxplot cannot show this clearly.
+
+In this section, we will use **ggdist** and **ggplot2** to make a raincloud plot of English scores by race.
+
+::: panel-tabset
+### The plot
+
+```{r}
+ggplot(exam_data, 
+       aes(x = RACE, 
+           y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA)
+```
+
+### The code chunk
+
+```{r}
+#| eval: false
+ggplot(exam_data, 
+       aes(x = RACE, 
+           y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA)
+```
+:::
+
+Next, we will add the second geometry layer using [`geom_boxplot()`](https://r4va.netlify.app/chap09) of ggplot2. This produces a narrow boxplot. We reduce the width and adjust the opacity.
+
+::: panel-tabset
+### The plot
+
+```{r}
+ggplot(exam_data, 
+       aes(x = RACE, 
+           y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA) +
+  geom_boxplot(width = .20,
+               outlier.shape = NA)
+```
+
+### The code chunk
+
+```{r}
+#| eval: false
+ggplot(exam_data, 
+       aes(x = RACE, 
+           y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA) +
+  geom_boxplot(width = .20,
+               outlier.shape = NA)
+```
+:::
+
+Lastly, we use **coord_flip()** from **ggplot2**. It flips the plot horizontally. This makes it look like a raincloud.
+
+We also use **theme_economist()** from **ggthemes**. It makes the plot look clean and professional.
+
+::: panel-tabset
+### The plot
+
+```{r}
+ggplot(exam_data, 
+       aes(x = RACE, 
+           y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA) +
+  geom_boxplot(width = .20,
+               outlier.shape = NA) +
+  stat_dots(side = "left", 
+            justification = 1.2, 
+            binwidth = .5,
+            dotsize = 1.5) +
+  coord_flip() +
+  theme_economist()
+```
+
+### The code chunk
+
+```{r}
+#| eval: false
+ggplot(exam_data, 
+       aes(x = RACE, 
+           y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA) +
+  geom_boxplot(width = .20,
+               outlier.shape = NA) +
+  stat_dots(side = "left", 
+            justification = 1.2, 
+            binwidth = .5,
+            dotsize = 1.5) +
+  coord_flip() +
+  theme_economist()
+```
+:::

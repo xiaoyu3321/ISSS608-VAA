@@ -1,0 +1,135 @@
+---
+title: "Hands-on Exercise 4B"
+author: "ZHANG Xiaoyu"
+date: "May 07, 2026"
+date-modified: "May 07,2026"
+format: html
+code-link: true
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+# **Visual Statistical Analysis**
+
+**ggstatsplot** is an extension of **ggplot2**. It creates plots that include statistical test results.
+
+It gives alternative statistical inference methods by default.It follows good practices for statistical reporting.It uses the **APA** format for reporting results.
+
+## **1. Installing and launching R packages**
+
+```{r}
+pacman::p_load(ggstatsplot, tidyverse)
+```
+
+## **2. Importing data**
+
+In this chapter we still use the *Exam_data.csv*
+
+```{r}
+exam_data <- read_csv("data/Exam_data.csv")
+
+```
+
+## **3. One-sample test: *gghistostats()* method**
+
+::: panel-tabset
+### The plot
+
+```{r}
+set.seed(1234)
+exam_data$ENGLISH <- as.numeric(exam_data$ENGLISH)
+
+gghistostats(
+  data = exam_data,
+  x = ENGLISH,
+  type = "bayes",
+  test.value = 60,
+  xlab = "English scores"
+)
+```
+
+### The code chunk
+
+```{r}
+#| eval: false
+set.seed(1234)
+exam_data$ENGLISH <- as.numeric(exam_data$ENGLISH)
+
+gghistostats(
+  data = exam,
+  x = ENGLISH,
+  type = "bayes",
+  test.value = 60,
+  xlab = "English scores"
+)
+```
+:::
+
+## **4. Unpacking the Bayes Factor**
+
+A Bayes Factor compares two hypotheses. It shows which hypothesis is better supported by the data.
+
+When comparing the alternative hypothesis (**H1**) and the null hypothesis (**H0**), the Bayes Factor is written as **B10**.
+
+A larger Bayes Factor means stronger evidence for **H1**. A smaller value means stronger evidence for **H0**.
+
+The Schwarz criterion is a simple way to estimate the Bayes Factor.Bayes Factor values can then be used to measure the strength of evidence.
+
+## **5. Two-sample mean test: *ggbetweenstats()***
+
+```{r}
+exam_data$MATHS <- as.numeric(exam_data$MATHS)
+ggbetweenstats(
+  data = exam_data,
+  x = GENDER, 
+  y = MATHS,
+  type = "np",
+  messages = FALSE
+)
+```
+
+## **6. Oneway ANOVA Test: *ggbetweenstats()* method**
+
+```{r}
+ggbetweenstats(
+  data = exam_data,
+  x = RACE, 
+  y = ENGLISH,
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "s",
+  p.adjust.method = "fdr",
+  messages = FALSE
+)
+```
+
+## **7. Significant Test of Correlation: *ggscatterstats()***
+
+```{r}
+ggscatterstats(
+  data = exam_data,
+  x = MATHS,
+  y = ENGLISH,
+  marginal = FALSE,
+  )
+```
+
+## **8. Significant Test of Association (Depedence) : *ggbarstats()* methods**
+
+```{r}
+exam1 <- exam_data %>% 
+  mutate(MATHS_bins = 
+           cut(MATHS, 
+               breaks = c(0,60,75,85,100))
+)
+```
+
+```{r}
+ggbarstats(exam1, 
+           x = MATHS_bins, 
+           y = GENDER)
+```
