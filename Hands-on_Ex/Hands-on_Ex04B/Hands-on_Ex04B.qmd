@@ -14,9 +14,9 @@ execute:
 
 # **Visual Statistical Analysis**
 
-**ggstatsplot** is an extension of **ggplot2**. It creates plots that include statistical test results.
+Statistical inference is a very useful statistical method. However, it can sometimes be difficult and abstract. In this section, we will use data visualisation to make statistical inference easier to understand and more intuitive.
 
-It gives alternative statistical inference methods by default.It follows good practices for statistical reporting.It uses the **APA** format for reporting results.
+**ggstatsplot** is an extension of **ggplot2**. It creates plots that include statistical test results.
 
 ## **1. Installing and launching R packages**
 
@@ -34,6 +34,12 @@ exam_data <- read_csv("data/Exam_data.csv")
 ```
 
 ## **3. One-sample test: *gghistostats()* method**
+
+A one-sample test is used to compare the mean of one sample with a known or expected value.
+
+It helps us check whether the sample result is significantly different from that value.
+
+Next, we use [*gghistostats()*](https://indrajeetpatil.github.io/ggstatsplot/reference/gghistostats.html) to build an visual of one-sample test on English scores.
 
 ::: panel-tabset
 ### The plot

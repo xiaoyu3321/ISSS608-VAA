@@ -155,6 +155,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex04D/Hands-on_Ex04D.html">
  <span class="dropdown-text">Hands-on Exercise 4D</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex05A/Hands-on_Ex05A.html">
+ <span class="dropdown-text">Hands-on Exercise 5A</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex05B/Hands-on_Ex05B.html">
+ <span class="dropdown-text">Hands-on Exercise 5B</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex05C/Hands-on_Ex05C.html">
+ <span class="dropdown-text">Hands-on Exercise 5C</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex05D/Hands-on_Ex05D.html">
+ <span class="dropdown-text">Hands-on Exercise 5D</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex05E/Hands-on_Ex05E.html">
+ <span class="dropdown-text">Hands-on Exercise 5E</span></a>
+  </li>  
     </ul>
 </li>
 </ul>
@@ -229,8 +249,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 </header><section id="visual-statistical-analysis" class="level1"><h1><strong>Visual Statistical Analysis</strong></h1>
+<p>Statistical inference is a very useful statistical method. However, it can sometimes be difficult and abstract. In this section, we will use data visualisation to make statistical inference easier to understand and more intuitive.</p>
 <p><strong>ggstatsplot</strong> is an extension of <strong>ggplot2</strong>. It creates plots that include statistical test results.</p>
-<p>It gives alternative statistical inference methods by default.It follows good practices for statistical reporting.It uses the <strong>APA</strong> format for reporting results.</p>
 <section id="installing-and-launching-r-packages" class="level2"><h2 class="anchored" data-anchor-id="installing-and-launching-r-packages"><strong>1. Installing and launching R packages</strong></h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pacman</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pacman/man/p_load.html">p_load</a></span><span class="op">(</span><span class="va">ggstatsplot</span>, <span class="va">tidyverse</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -241,6 +261,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">exam_data</span> <span class="op">&lt;-</span> <span class="fu">read_csv</span><span class="op">(</span><span class="st">"data/Exam_data.csv"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section><section id="one-sample-test-gghistostats-method" class="level2"><h2 class="anchored" data-anchor-id="one-sample-test-gghistostats-method"><strong>3. One-sample test: <em>gghistostats()</em> method</strong></h2>
+<p>A one-sample test is used to compare the mean of one sample with a known or expected value.</p>
+<p>It helps us check whether the sample result is significantly different from that value.</p>
+<p>Next, we use <a href="https://indrajeetpatil.github.io/ggstatsplot/reference/gghistostats.html"><em>gghistostats()</em></a> to build an visual of one-sample test on English scores.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist">
 <li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">The plot</a></li>
