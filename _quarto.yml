@@ -33,10 +33,23 @@ website:
           href: "Hands-on_Ex/Hands-on_Ex05D/Hands-on_Ex05D.html" 
         - text: "Hands-on Exercise 5E"
           href: "Hands-on_Ex/Hands-on_Ex05E/Hands-on_Ex05E.html" 
+    - text: "Take-home Exercise"
+      menu:
+        - text: "Take-home Exercise 1"
+          href: "Take-home_Ex/Take-home_Ex01/Executive_Summary.html"
     right: 
       - href: index.qmd
         text: Home
       - about.qmd
+  sidebar:
+    - id: "take-home-1"
+      title: "Take-home Exercise 1"
+      style: "docked"
+      contents:
+        - text: "Executive Summary"
+          href: "Take-home_Ex/Take-home_Ex01/Executive_Summary.html"
+        - text: "Technical Report"
+          href: "Take-home_Ex/Take-home_Ex01/Technical_Report.html"
 
 format:
   html:
