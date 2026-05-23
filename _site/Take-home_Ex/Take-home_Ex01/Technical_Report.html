@@ -208,8 +208,12 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercise">
 <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex01/Technical_Report.html">
+ <span class="dropdown-text">Take-home Exercise 1 (Technical Report)</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex01/Executive_Summary.html">
- <span class="dropdown-text">Take-home Exercise 1</span></a>
+ <span class="dropdown-text">Take-home Exercise 1 (Executive Summary)</span></a>
   </li>  
     </ul>
 </li>
@@ -294,7 +298,7 @@ window.Quarto = {
   <li>
 <a href="#bivariate-visual-analytics-statistical-validation" id="toc-bivariate-visual-analytics-statistical-validation" class="nav-link" data-scroll-target="#bivariate-visual-analytics-statistical-validation">4. Bivariate Visual Analytics &amp; Statistical Validation</a>
   <ul class="collapse">
-<li><a href="#continuous-metric-correlation-analysis" id="toc-continuous-metric-correlation-analysis" class="nav-link" data-scroll-target="#continuous-metric-correlation-analysis">4.1 Continuous Metric Correlation Analysis</a></li>
+<li><a href="#driver-age-claim-frequency" id="toc-driver-age-claim-frequency" class="nav-link" data-scroll-target="#driver-age-claim-frequency">4.1 Driver Age &amp; Claim Frequency</a></li>
   <li><a href="#claims-severity-analysis-across-vehicle-age" id="toc-claims-severity-analysis-across-vehicle-age" class="nav-link" data-scroll-target="#claims-severity-analysis-across-vehicle-age">4.2 Claims Severity Analysis across Vehicle Age</a></li>
   <li><a href="#underwriting-performance-across-product-types" id="toc-underwriting-performance-across-product-types" class="nav-link" data-scroll-target="#underwriting-performance-across-product-types">4.3 Underwriting Performance across Product Types</a></li>
   <li><a href="#profit-performance-across-product-types" id="toc-profit-performance-across-product-types" class="nav-link" data-scroll-target="#profit-performance-across-product-types">4.4 Profit Performance across Product Types</a></li>
@@ -362,6 +366,14 @@ window.Quarto = {
 <span>               <span class="va">GGally</span>, <span class="va">heatmaply</span>,<span class="va">treemapify</span>,</span>
 <span>               <span class="va">tidyverse</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<ul>
+<li><p><strong>tidyverse</strong>: An essential collection of packages designed for data science, used for data manipulation, cleaning, and core visualization (ggplot2).</p></li>
+<li><p><strong>ggdist</strong>: Specialized for visualizing distributions and uncertainty, offering advanced geoms like raincloud plots.</p></li>
+<li><p><strong>ggstatsplot</strong>: Automatically adds statistical test results and details directly onto <code>ggplot2</code> charts.</p></li>
+<li><p><strong>GGally</strong>: Extends <code>ggplot2</code> by adding functions to easily plot correlation matrices, pairs plots, and networks.</p></li>
+<li><p><strong>heatmaply</strong>: Used for creating interactive cluster heatmaps that allow users to zoom and hover for details.</p></li>
+<li><p><strong>treemapify</strong>: Provides geoms to create treemaps within the <code>ggplot2</code> framework, useful for showing hierarchical structure.</p></li>
+</ul>
 <section id="data-import" class="level2"><h2 class="anchored" data-anchor-id="data-import">2.1 Data Import</h2>
 <p>The raw data is stored in CSV format, and we use <code><a href="https://rdrr.io/r/utils/read.table.html">read.delim()</a></code> to import it while specifying the separator as a semicolon.</p>
 <div class="cell">
@@ -893,7 +905,7 @@ $ age_group                   &lt;fct&gt; 45-64 (Senior), 25-44 (Mid), 25-44 (Mi
 </div>
 </div>
 </div>
-<p>From this chart we can see that the portfolio carries a distinctive <strong>aging vehicle risk</strong>. Having more than 70% of insured vehicles older than 20 years (and more than 30% older than 30 years) suggests that the business primarily covers older models.</p>
+<p>From this chart we can see that the portfolio carries a distinctive <strong>aging vehicle risk</strong>. Having nearly 70% of insured vehicles older than 20 years (and more than 30% older than 30 years) suggests that the business primarily covers older models.</p>
 <p>In insurance underwriting, older vehicles generally have lower market values but might face different risk profiles, such as higher mechanical failure rates or scarcity of replacement parts during claims.</p>
 </section><section id="insured-vehicle-seats-capacity" class="level2"><h2 class="anchored" data-anchor-id="insured-vehicle-seats-capacity">3.11 Insured Vehicle Seats Capacity</h2>
 <p>This step is to evaluate the vehicle capacity risk across our business. We want to discover if the majority of cars are standard 5-seaters or if there are large commercial passenger vans/buses, which bring higher human-injury risk per accident.</p>
@@ -1013,7 +1025,7 @@ $ age_group                   &lt;fct&gt; 45-64 (Senior), 25-44 (Mid), 25-44 (Mi
 </ul></section></section><section id="bivariate-visual-analytics-statistical-validation" class="level1"><h1>4. Bivariate Visual Analytics &amp; Statistical Validation</h1>
 <p>While univariate analysis helps us understand each variable individually, it cannot show how different factors interact to affect portfolio performance. Bivariate visual analysis allows us to explore the relationships between two variables at a time, such as how driver characteristics or vehicle features are related to claim frequency and loss ratios.</p>
 <p>However, visual patterns alone are not always reliable because they can be influenced by random fluctuations or differences in sample size. To make the analysis more dependable for underwriting decisions, statistical tests such as correlation analysis and ANOVA are incorporated into the visualizations. These tests help confirm whether the observed differences are statistically meaningful or simply caused by chance.</p>
-<section id="continuous-metric-correlation-analysis" class="level2"><h2 class="anchored" data-anchor-id="continuous-metric-correlation-analysis">4.1 Continuous Metric Correlation Analysis</h2>
+<section id="driver-age-claim-frequency" class="level2"><h2 class="anchored" data-anchor-id="driver-age-claim-frequency">4.1 Driver Age &amp; Claim Frequency</h2>
 <p>This step is to test if driver age has a statistically significant relationship with financial loss ratios. We want to confirm whether older drivers are truly more profitable than young ones using mathematical validation.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">insurance_processed</span> <span class="op">&lt;-</span> <span class="fu">mutate</span><span class="op">(</span><span class="va">insurance_processed</span>,</span>
@@ -1487,16 +1499,14 @@ $ age_group                   &lt;fct&gt; 45-64 (Senior), 25-44 (Mid), 25-44 (Mi
 </ul></section><section id="strategic-conclusions-actionable-recommendations" class="level1"><h1>6. Strategic Conclusions &amp; Actionable Recommendations</h1>
 <section id="core-actuarial-findings" class="level2"><h2 class="anchored" data-anchor-id="core-actuarial-findings">6.1 Core Actuarial Findings</h2>
 <p>The analysis of the automobile insurance portfolio (2022–2024) shows that the company’s poor profitability is mainly caused by several high-risk segments rather than the whole portfolio.</p>
-<ul>
-<li><p><strong><code>COMP_N</code> has serious pricing issues：</strong><code>COMP_N</code> recorded a 102% loss ratio in 2024. The main problem is extremely high claim frequency (79.8%) with relatively small claim amounts. This suggests many policyholders are making frequent minor claims, leading to continuous underwriting losses.</p></li>
-<li><p><strong>Older vehicles in New Business are riskier：</strong>New Business (NB) policies for vehicles older than 10 years show much higher loss ratios compared to renewal business (P). This indicates possible adverse selection, where higher-risk drivers are more likely to insure older vehicles.</p></li>
-<li><p><strong>Most exposure comes from older vehicles：</strong>The portfolio is heavily concentrated in 5-seater vehicles aged 10–40 years. Therefore, these high-risk segments have a major impact on the company’s overall profitability.</p></li>
-</ul></section><section id="target-underwriting-action-plan" class="level2"><h2 class="anchored" data-anchor-id="target-underwriting-action-plan">6.2 Target Underwriting Action Plan</h2>
-<ul>
-<li><p><strong>Increase deductibles for <code>COMP_N：</code></strong>Higher deductibles can reduce frequent small claims and improve profitability.</p></li>
-<li><p><strong>Apply stricter underwriting for older vehicles in New Business：</strong>Additional claims-history checks should be required for vehicles older than 10 years, while encouraging customer renewals.</p></li>
-<li><p><strong>Adjust pricing for older vehicles：</strong>Premium rates for vehicles above 15 years old should be increased to better reflect their higher risk levels</p></li>
-</ul>
+<p><strong>First, <code>COMP_N</code> shows clear pricing issues.</strong> It recorded a <strong>102% loss ratio in 2024</strong>, which is well above the break-even level. The main driver is not high claim severity, but extremely high claim frequency at <strong>79.8%</strong>, combined with relatively small claim amounts. This indicates that a large number of policyholders are making frequent minor claims, which steadily erodes profitability.</p>
+<p><strong>Second, older vehicles in New Business are significantly riskier.</strong> For vehicles older than 10 years, New Business policies show much higher loss ratios compared to renewal business. This suggests potential adverse selection, where higher-risk customers are more likely to enter the portfolio through older vehicles.</p>
+<p><strong>Finally, exposure is heavily concentrated in older vehicles.</strong> A large share of the portfolio consists of 5-seater vehicles aged between 10 and 40 years. As a result, these older-vehicle segments have a disproportionate impact on overall profitability.</p>
+</section><section id="target-underwriting-action-plan" class="level2"><h2 class="anchored" data-anchor-id="target-underwriting-action-plan">6.2 Target Underwriting Action Plan</h2>
+<p>To address these issues, we recommend the following actions:</p>
+<p><strong>First, increase deductibles for <code>COMP_N</code>.</strong> This helps reduce frequent small claims and improves overall loss experience.</p>
+<p><strong>Second, tighten underwriting for older vehicles in New Business.</strong> For vehicles older than 10 years, additional claims-history checks should be introduced, while also prioritising the retention of existing renewal customers.</p>
+<p><strong>Third, adjust pricing for older vehicles.</strong> Premiums for vehicles above 15 years old should be increased to better reflect their higher underlying risk.</p>
 
 
 </section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">

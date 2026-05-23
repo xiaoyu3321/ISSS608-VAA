@@ -34,6 +34,18 @@ pacman::p_load(ggdist, ggstatsplot,
                tidyverse) 
 ```
 
+-   **tidyverse**: An essential collection of packages designed for data science, used for data manipulation, cleaning, and core visualization (ggplot2).
+
+-   **ggdist**: Specialized for visualizing distributions and uncertainty, offering advanced geoms like raincloud plots.
+
+-   **ggstatsplot**: Automatically adds statistical test results and details directly onto `ggplot2` charts.
+
+-   **GGally**: Extends `ggplot2` by adding functions to easily plot correlation matrices, pairs plots, and networks.
+
+-   **heatmaply**: Used for creating interactive cluster heatmaps that allow users to zoom and hover for details.
+
+-   **treemapify**: Provides geoms to create treemaps within the `ggplot2` framework, useful for showing hierarchical structure.
+
 ## 2.1 Data Import
 
 The raw data is stored in CSV format, and we use `read.delim()` to import it while specifying the separator as a semicolon.
@@ -500,7 +512,7 @@ ggplot(data = vehicle_age_summary, aes(x = vehicle_age_binned, y = n, fill = n))
   )
 ```
 
-From this chart we can see that the portfolio carries a distinctive **aging vehicle risk**. Having more than 70% of insured vehicles older than 20 years (and more than 30% older than 30 years) suggests that the business primarily covers older models.
+From this chart we can see that the portfolio carries a distinctive **aging vehicle risk**. Having nearly 70% of insured vehicles older than 20 years (and more than 30% older than 30 years) suggests that the business primarily covers older models.
 
 In insurance underwriting, older vehicles generally have lower market values but might face different risk profiles, such as higher mechanical failure rates or scarcity of replacement parts during claims.
 
@@ -621,7 +633,7 @@ While univariate analysis helps us understand each variable individually, it can
 
 However, visual patterns alone are not always reliable because they can be influenced by random fluctuations or differences in sample size. To make the analysis more dependable for underwriting decisions, statistical tests such as correlation analysis and ANOVA are incorporated into the visualizations. These tests help confirm whether the observed differences are statistically meaningful or simply caused by chance.
 
-## 4.1 Continuous Metric Correlation Analysis
+## 4.1 Driver Age & Claim Frequency
 
 This step is to test if driver age has a statistically significant relationship with financial loss ratios. We want to confirm whether older drivers are truly more profitable than young ones using mathematical validation.
 
@@ -1111,16 +1123,18 @@ The above boxplot shows a multi-dimensional view of risk across five policy type
 
 The analysis of the automobile insurance portfolio (2022–2024) shows that the company’s poor profitability is mainly caused by several high-risk segments rather than the whole portfolio.
 
--   **`COMP_N` has serious pricing issues：**`COMP_N` recorded a 102% loss ratio in 2024. The main problem is extremely high claim frequency (79.8%) with relatively small claim amounts. This suggests many policyholders are making frequent minor claims, leading to continuous underwriting losses.
+**First, `COMP_N` shows clear pricing issues.** It recorded a **102% loss ratio in 2024**, which is well above the break-even level. The main driver is not high claim severity, but extremely high claim frequency at **79.8%**, combined with relatively small claim amounts. This indicates that a large number of policyholders are making frequent minor claims, which steadily erodes profitability.
 
--   **Older vehicles in New Business are riskier：**New Business (NB) policies for vehicles older than 10 years show much higher loss ratios compared to renewal business (P). This indicates possible adverse selection, where higher-risk drivers are more likely to insure older vehicles.
+**Second, older vehicles in New Business are significantly riskier.** For vehicles older than 10 years, New Business policies show much higher loss ratios compared to renewal business. This suggests potential adverse selection, where higher-risk customers are more likely to enter the portfolio through older vehicles.
 
--   **Most exposure comes from older vehicles：**The portfolio is heavily concentrated in 5-seater vehicles aged 10–40 years. Therefore, these high-risk segments have a major impact on the company’s overall profitability.
+**Finally, exposure is heavily concentrated in older vehicles.** A large share of the portfolio consists of 5-seater vehicles aged between 10 and 40 years. As a result, these older-vehicle segments have a disproportionate impact on overall profitability.
 
 ## 6.2 Target Underwriting Action Plan
 
--   **Increase deductibles for `COMP_N：`**Higher deductibles can reduce frequent small claims and improve profitability.
+To address these issues, we recommend the following actions:
 
--   **Apply stricter underwriting for older vehicles in New Business：**Additional claims-history checks should be required for vehicles older than 10 years, while encouraging customer renewals.
+**First, increase deductibles for `COMP_N`.** This helps reduce frequent small claims and improves overall loss experience.
 
--   **Adjust pricing for older vehicles：**Premium rates for vehicles above 15 years old should be increased to better reflect their higher risk levels
+**Second, tighten underwriting for older vehicles in New Business.** For vehicles older than 10 years, additional claims-history checks should be introduced, while also prioritising the retention of existing renewal customers.
+
+**Third, adjust pricing for older vehicles.** Premiums for vehicles above 15 years old should be increased to better reflect their higher underlying risk.
