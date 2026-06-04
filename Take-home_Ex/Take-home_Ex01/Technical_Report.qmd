@@ -65,7 +65,7 @@ We can see that the dataset contains anonymized motor vehicle insurance microdat
 ### Variable Classifications
 
 |  |  |  |
-|------------------------|------------------------|------------------------|
+|----|----|----|
 | **Variable Group** | **Description** | **Key Attributes Included** |
 | Policy and Insured Characteristics | Basic contractual definitions and historical account information. | `insured_id`, `policy_type`, `policy_status`, `business_type`, `bonus_score` |
 | Driver and Vehicle Characteristics | Risk profiles tied directly to the physical asset and operator demographics. | `driver_age`, `vehicle_age`, `age_driving_licence`, `fuel_type`, `vehicle_value`, `circulation_area` |

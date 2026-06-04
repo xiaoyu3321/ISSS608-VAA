@@ -1,0 +1,725 @@
+---
+title: "Take-home Exercise 2: Mini-Challenge 1"
+subtitle: "VAST Challenge 2026: Multi-Agent Crisis Investigation"
+author: "Zhang Xiaoyu"
+date: "May 27, 2026"
+date-modified: "June 4,2026"
+format: html
+code-link: true
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+# 1. Project Background
+
+This report is prepared as part of the **ISSS608 Visual Analytics and Applications** [Take-home Exercise 2](https://isss608-ay2025-26apr.netlify.app/th_ex/th_ex2), focusing on the analysis and interpretation of multi-agent system behavior. We start by understanding what [Mini-Challenge 1](https://vast-challenge.github.io/2026/MC1.html) is about.
+
+**TenantThread** is a property tech company. It uses a system called “Retention Optimizer” to score tenants and guide rental decisions. This system is controversial because it may indirectly identify tenants even though it claims to be anonymized.
+
+At the same time, there is growing public pressure. A media report from the SaltWind Journal reveals concerns about privacy and fairness. This leads to strong backlash under the hashtag #AlgorithmicEviction.
+
+While this is happening, TenantThread signs a confidential merger with CivicLoom. The deal is called “Project HarborCrest”.
+
+To protect this information, a compliance system called “The Judge” is introduced. It is supposed to block any leakage before June 5th, 2046.
+
+# 2. The Incident
+
+On June 5th, 2046, at **5:00 PM**, the embargo was broken. Sensitive details appeared on FleX via TenantThread’s automated communication accounts.
+
+So our main question is to **understand whether someone deliberately leak the information, or did the system fail under pressure**?
+
+# 3. Data Preparation
+
+We now prepare the data so we can study what happened step by step.
+
+First we import the R packages for data import, text mining, network analysis, and interactive data visualization to ensure full reproducibility.
+
+```{r}
+pacman::p_load(ggdist, ggstatsplot, jsonlite, lubridate, tidytext, tidygraph, 
+               ggraph, plotly, treemapify, DT, igraph, stringr, ggrepel,
+               tidyverse, ggridges, ggdist, seriation, visNetwork) 
+```
+
+The dataset is stored as a JSON file. It contains nested structures for rounds, messages, and system context. This step loads it into R and prepares it for flattening.
+
+```{r}
+mc1 <- fromJSON(
+  "VAST_Challenge_2026_MC1/MC1_final_00.json",
+  flatten = TRUE
+)
+```
+
+Since the communication records are nested inside each simulation round, the next step flattens the nested structures into a comprehensive message-level table and normalizes timestamps for time-based tracking.
+
+```{r}
+rounds_tbl <- mc1$rounds %>%
+  select(
+    hour,
+    environment_context.event_headline
+  ) %>%
+  rename(
+    headline = environment_context.event_headline
+  ) %>%
+  mutate(
+    round_id = row_number(),
+    hour = ymd_hms(hour)
+  )
+```
+
+Communication data is nested inside each round. This step expands it so that each message becomes one row.
+
+This transformation is important because later analysis (activity, network, sentiment) requires message-level granularity.
+
+```{r}
+messages_tbl <-
+  mc1$rounds %>%
+  select(
+    hour,
+    environment_context.event_headline,
+    communications
+  ) %>%
+  unnest(communications)
+```
+
+Before starting analysis, we inspect the dataset structure to ensure all variables are correctly extracted and no information is missing.
+
+```{r}
+names(mc1$rounds)
+
+glimpse(mc1$rounds)
+```
+
+The communication records contain messages exchanged between agents. The next step expands the nested communication data into a flat table.
+
+```{r}
+messages_tbl <-
+  mc1$rounds %>%
+  transmute(
+    round_time = hour,
+    headline =
+      environment_context.event_headline,
+    communications
+  ) %>%
+  unnest(communications)
+```
+
+Then we convert character timestamps into date-time format for time-based analysis.
+
+```{r}
+messages_tbl <- messages_tbl %>%
+  mutate(
+    timestamp = ymd_hms(timestamp),
+    round_time = ymd_hms(round_time)
+  )
+```
+
+The next step we review the communication dataset and verifies that the records have been extracted correctly.
+
+```{r}
+glimpse(messages_tbl)
+
+head(messages_tbl)
+```
+
+# 4. Data Visualization
+
+## 4.1 Communication Activity Over Time
+
+First let's see how communication activity changed throughout the investigation period.
+
+```{r}
+messages_tbl %>%
+  count(round_time) %>%
+  ggplot(
+    aes(round_time, n)
+  ) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Communication Activity Over Time",
+    x = NULL,
+    y = "Number of Messages"
+  )
+```
+
+The chart above displays communication activity over time.The **vertical axis** represents the number of messages and the **horizontal axis** represents the timeline from before May 21 to past June 04.
+
+The data shows daily fluctuations in communication volume. The communication volume remains relatively stable across most of the timeline. There is no sharp anomaly before the breach. However,there is a sharp increase in activity reaching its peak shortly after June 04.
+
+## 4.2 Event Timeline
+
+Next step we reconstruct the sequence of key events during the investigation period. The goal is to identify whether there were early signals of instability.
+
+```{r}
+#| fig.width: 16
+#| fig.height: 8
+ggplot(rounds_tbl, aes(x = hour, y = 1)) +
+  geom_point(size = 3) +
+  geom_text_repel(
+    aes(label = headline),
+    direction    = "y",     
+    nudge_y      = 0.5,     
+    angle        = 0,     
+    size         = 3,
+    segment.color = "grey50", 
+    segment.size = 0.5
+  ) +
+  scale_y_continuous(limits = c(0, 3)) + 
+  theme_minimal() +
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y  = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank()
+  ) +
+  labs(x = "Time",
+       title = "Event Timeline",)
+```
+
+This timeline maps the events from May 21 through June 4 and beyond. Here is the chronological timeline and key events：
+
++-------------------------+---------------------------------------+------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+| Phase / Date            | Key Event                             | Summary of Activity                                                                                  | Connection to the Breach                                                                                                                    |
++=========================+=======================================+======================================================================================================+=============================================================================================================================================+
+| **Phase I**             | **Q2 Planning & Compliance Warnings** | AG inquiries flagged; Platform Trust disputes Legal.                                                 | Establishes underlying compliance and privacy vulnerabilities, setting the stage for the public relations crisis.                           |
+|                         |                                       |                                                                                                      |                                                                                                                                             |
+| Mid-to-Late May         |                                       |                                                                                                      |                                                                                                                                             |
++-------------------------+---------------------------------------+------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+| **Fatal Turning Point** | **Shadow Channel & Merger Leak**      | Shadow channel activated; poor Q1 numbers revealed; **merger briefing conducted in Shadow channel**. | **Input-Side Data Pollution**: Confidential merger data enters the vector accessible by automated AI agents, destroying physical isolation. |
+|                         |                                       |                                                                                                      |                                                                                                                                             |
+| Around May 21           |                                       |                                                                                                      |                                                                                                                                             |
++-------------------------+---------------------------------------+------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+| **Phase II**            | **Public Crisis & Agent Patching**    | **The Judge (compliance monitor) deployed to Comms Huddle**;                                         | External `#AlgorithmicEviction` outrage spikes;                                                                                             |
+|                         |                                       |                                                                                                      |                                                                                                                                             |
+| Late May to June 4      |                                       | SaltWind Journal exposes corporate data broker ties.                                                 | system shifts to high-stress damage control while a hasty compliance patch is applied.                                                      |
++-------------------------+---------------------------------------+------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+| **Phase III**           | **Executive Speech & Traffic Spike**  | ResidentIQ attacks;                                                                                  | Aggressive directives force PR agents to prioritize market confidence over all else, triggering rapid, automated content generation.        |
+|                         |                                       |                                                                                                      |                                                                                                                                             |
+| June 5 (Day of Breach)  |                                       | leadership delivers volatile **"No Plan B" speech**;                                                 |                                                                                                                                             |
+|                         |                                       |                                                                                                      |                                                                                                                                             |
+|                         |                                       | traffic spikes vertically from 1 PM to 5 PM.                                                         |                                                                                                                                             |
++-------------------------+---------------------------------------+------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+| **The Final Crash**     | **Embargo Broken via FleX Post**      | Automated account leaks embargoed info on FleX at 5:00 PM.                                           | Overloaded by the crisis, the PR agent's deliberation freezes;                                                                              |
+|                         |                                       |                                                                                                      |                                                                                                                                             |
+| June 5, 5:00 PM         |                                       |                                                                                                      | it blindly grabs the polluted merger data to prove stability, flooding past The Judge.                                                      |
++-------------------------+---------------------------------------+------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+
+From the event timeline, we see events gradually clustering toward the final days. There is no single sudden trigger. Instead, small decisions accumulate over time. The system slowly moves toward instability without noticing it clearly.
+
+## 4.3 Message Count by Agent
+
+The next step we want to see which agents were the most active during the communication process.
+
+```{r}
+agent_activity <-
+  messages_tbl %>%
+  count(agent_id)
+```
+
+```{r}
+ggplot(
+  agent_activity,
+  aes(
+    reorder(agent_id, n),
+    n
+  )
+) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Message Count by Agent",
+    x = NULL,
+    y = "Number of Messages"
+  )
+```
+
+From the bar chart above we can see that the `legal_agent` has the highest message count, exceeding 250 messages.The `social_media_agent` and `quality_agent` follow, both showing significant activity levels above 150 messages.The `pr_agent`, `pr_intern_agent`, `intern_agent`, and `judge_agent` show progressively lower levels of communication, with the `judge_agent` being the least active.
+
+The chart highlights that legal and social media-related roles are the primary drivers of communication, suggesting these areas are central to the project's current operational focus.
+
+## 4.4 Agent Behavioral Positions
+
+Next we construct a communication network to reveal interactions between agents.
+
+Before we can understand how agents interact, we first need a simple mapping between each message and the agent who created it.
+
+```{r}
+msg_lookup <- messages_tbl %>%
+  select(
+    message_id,
+    agent_id
+  )
+```
+
+Now we reconstruct communication flows between agents.Each message may respond to another message. So we use `responding_to` to trace back the original sender.
+
+```{r}
+edges <- messages_tbl %>%
+  left_join(
+    msg_lookup,
+    by = c("responding_to" = "message_id")
+  ) %>%
+  filter(!is.na(agent_id.y)) %>%
+  transmute(
+    from = agent_id.x,
+    to = agent_id.y
+  )
+```
+
+Then we convert the edge list into a network object.This step transforms the dataset from a table format into a graph structure
+
+```{r}
+library(igraph)
+
+g <- graph_from_data_frame(
+  edges,
+  directed = TRUE
+)
+```
+
+Then we visualizes the communication structure between agents.
+
+```{r}
+ggraph(g) +
+  geom_edge_link(alpha = 0.3) +
+  geom_node_point(size = 3) +
+  geom_node_text(
+    aes(label = name),
+    repel = TRUE
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Agent Behavioral Positions"
+  )
+```
+
+In this network graph, the x and y axes do not represent real-world variables. Instead, they are automatically generated by a layout algorithm to position nodes in a visually clear way. The key information is encoded in the connections between nodes (edges), not in the axis values.
+
+We observe that social_media_agent, legal_agent, and pr_agent form the central communication hubs with dense connections, while agents like pr_intern_agent are located at the periphery with fewer links. The judge_agent appears connected but not central, suggesting limited influence in the main communication flow. Overall, the system is highly centralized around a few key operational agents, while the enforcement role remains structurally peripheral, which may create vulnerability under high communication pressure.
+
+## 4.5 Risk-related Word Appears Over Time
+
+Next step examines internal reasoning traces from agents. The goal is to detect uncertainty or risk awareness before the breach.
+
+We keep only messages where agents show internal reasoning. This helps us focus on decision-making signals.
+
+```{r}
+thoughts_tbl <-
+  messages_tbl %>%
+  filter(
+    !is.na(
+      internal_state.deliberating
+    )
+  )
+```
+
+Then we split deliberation text into individual words to make it easier to analyze patterns and define key risk-related words to track signals of system stress or sensitive topics.
+
+```{r}
+tokens <-
+  thoughts_tbl %>%
+  unnest_tokens(
+    word,
+    internal_state.deliberating
+  )
+```
+
+```{r}
+risk_words <- c(
+  "risk",
+  "privacy",
+  "governance",
+  "embargo",
+  "merger",
+  "leak"
+)
+```
+
+Then we count how often each risk-related word appears at different time points.
+
+```{r}
+keyword_counts <-
+  tokens %>%
+  filter(
+    word %in% risk_words
+  ) %>%
+  count(
+    round_time,
+    word
+  )
+```
+
+The following plot shows how internal risk thinking changes over time across different keywords.
+
+```{r}
+ggplot(
+  keyword_counts,
+  aes(
+    round_time,
+    n,
+    color = word
+  )
+) +
+  geom_line()
+```
+
+This figure shows the frequency of key internal risk-related terms from mid-May to June 5. In the early stage, *risk* and *governance* dominate and reach clear peaks around May 21, indicating early structural and compliance pressure within the system. After May 21, *merger* and *embargo* begin to appear more consistently, suggesting gradual diffusion of sensitive information across agents. In the final phase leading to June 5, multiple keywords rise sharply together, especially *risk*, *governance*, and *merger*, showing a sudden convergence of operational stress and sensitive content. This pattern suggests that the system moved from isolated risk concerns to a synchronized escalation of sensitive topics just before the breach.
+
+## 4.6 Judge Agent Operational Activity Over Time
+
+Next step examines the behavior of the Judge agent and its role in enforcing the embargo.
+
+We first isolate all messages produced by the Judge agent. This allows us to focus only on compliance-related activity in the system.
+
+```{r}
+judge_msgs <-
+  messages_tbl %>%
+  filter(
+    str_detect(
+      agent_id,
+      "judge"
+    )
+  )
+```
+
+We group Judge activity by hour to understand how its workload changes over time. This helps us detect whether the Judge is stable or overloaded.
+
+```{r}
+judge_tbl <-
+  judge_msgs %>%
+  mutate(hour_bin = floor_date(round_time, unit = "hour")) %>%
+  count(hour_bin)
+```
+
+The plot below shows how frequently the Judge agent processes validation requests. It helps us understand whether the enforcement system is stable or experiencing pressure spikes.
+
+```{r}
+ggplot(judge_tbl, aes(x = hour_bin, y = n)) +
+  geom_line(linewidth = 1, color = "red") +
+  geom_point(color = "red") +
+  labs(
+    title = "Judge Agent Operational Activity Over Time",
+    x = "Time",
+    y = "Number of Validation Requests"
+  ) +
+  theme_minimal()
+```
+
+This figure shows the number of validation requests sent to the Judge agent over time, reflecting how often other agents required compliance or embargo checks before publishing content. While activity remains relatively stable at a moderate level in late May, it drops significantly between June 1 and June 4, reaching a historical low just before the breach period. Although there is a slight rebound on June 5, the increase is minimal compared to the overall communication surge in the system. This indicates a growing disconnect between system activity and compliance enforcement, where most communication appears to bypass or avoid the Judge layer during the critical period. Overall, the pattern suggests a breakdown in the routing of compliance checks rather than an intentional approval of sensitive content.
+
+## 4.7 Time Window on June 5th
+
+Next step we zoom into the critical time window on June 5th. The goal is to inspect what was happening immediately before the embargo break.
+
+```{r}
+crisis_hour_tbl <- messages_tbl %>%
+  filter(
+    round_time >= ymd_hms("2046-06-05 12:00:00") &
+    round_time <= ymd_hms("2046-06-05 19:00:00")
+  )
+```
+
+This step extracts only the 5 PM hour messages to inspect actions close to the embargo deadline.
+
+```{r}
+crisis_hour_tbl %>%
+  filter(hour(round_time) == 17) %>%
+  select(
+    agent_id,
+    content,
+    everything()
+  ) %>%
+  datatable(
+    options = list(pageLength = 5),
+    caption = "Communications at 5:00 PM on June 5th"
+  )
+```
+
+This table isolates communication at the exact breach hour. It allows inspection of what content was being processed right before embargoed information was released.
+
+## 4.8 Internal Decision Pressure Evolves Over Time
+
+Next we visualize how how internal decision pressure evolves over time.
+
+```{r}
+messages_tbl %>%
+  count(round_time, internal_state.deliberating) %>%
+  ggplot(aes(
+    x = round_time,
+    y = n,
+    fill = internal_state.deliberating
+  )) +
+  geom_col(position = "stack") +
+  labs(
+    title = "Internal Deliberation Pressure Over Time",
+    x = "Time",
+    y = "Message Count",
+    fill = "Deliberation State"
+  ) +
+  theme_minimal()
+```
+
+## 4.9 **Crisis Communication Network**
+
+Next step builds a communication network for the crisis window to trace how information flowed between agents.
+
+```{r}
+msg_lookup <- messages_tbl %>%
+  select(
+    message_id,
+    agent_id
+  )
+```
+
+```{r}
+crisis_edges <- messages_tbl %>%
+  filter(
+    round_time >= ymd_hms("2046-06-05 15:00:00") &
+    round_time <= ymd_hms("2046-06-05 18:00:00")
+  ) %>%
+  left_join(
+    msg_lookup,
+    by = c("responding_to" = "message_id")
+  ) %>%
+  filter(!is.na(agent_id.y)) %>%
+  transmute(
+    from = agent_id.x,
+    to = agent_id.y
+  ) %>%
+  distinct()
+```
+
+This step creates node attributes and assigns colors based on agent type for better interpretation of roles.
+
+```{r}
+nodes_vector <- unique(c(crisis_edges$from, crisis_edges$to))
+
+crisis_nodes <- data.frame(
+  id = nodes_vector,
+  label = nodes_vector,
+  stringsAsFactors = FALSE
+) %>%
+  mutate(
+    color = case_when(
+      str_detect(id, "judge") ~ "red",
+      str_detect(id, "social") ~ "orange",
+      TRUE ~ "lightblue"
+    )
+  )
+```
+
+This step visualizes the crisis communication network and highlights how agents interacted during the breach window.
+
+```{r}
+visNetwork(
+  crisis_nodes,
+  crisis_edges,
+  main = "Crisis Communication Network (15:00–18:00)"
+) %>%
+  visEdges(arrows = "to") %>%
+  visOptions(
+    highlightNearest = TRUE,
+    nodesIdSelection = TRUE
+  ) %>%
+  visPhysics(stabilization = TRUE)
+```
+
+This visualization shows how communication between agents evolved during the critical window of June 5th (15:00–18:00) under different focal perspectives. The overall structure consistently highlights social_media_agent as the central hub of activity, with dense bidirectional links to legal and operational agents, indicating heavy coordination pressure during crisis response.
+
+In contrast, judge_agent maintains a strong directional control signal toward social_media_agent, but this signal appears structurally overwhelmed by the much higher communication volume flowing through the system.
+
+The network reveals a clear imbalance: while compliance enforcement exists and is active, it is positioned against a highly dense, fast-moving communication cluster centered on content generation and legal negotiation. This suggests that the final embargo breach was not due to the absence of control, but rather the inability of the control signal to propagate effectively within an overloaded multi-agent communication system.
+
+## 4.10 Systemic Sentiment Drift
+
+Next step we visualize the distribution of system-level sentiment over time.
+
+```{r}
+mc1$rounds %>%
+  mutate(
+    sentiment = environment_context.market_snapshot.sentiment,
+    date = as.Date(ymd_hms(hour))
+  ) %>%
+  filter(!is.na(sentiment)) %>%
+  count(date, sentiment) %>%
+  ggplot(aes(x = date, y = n, fill = sentiment)) +
+  geom_col() +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Systemic Sentiment Drift (Market-Level Signals)",
+    x = "Date",
+    y = "Count",
+    fill = "Sentiment"
+  ) +
+  theme_minimal()
+```
+
+It highlights a sharp increase in critical sentiment on June 5th, indicating system instability under external pressure.
+
+This figure shows the evolution of system-level sentiment signals over time, based on external market and media feedback processed by the agent system. Before June 4, sentiment remains relatively stable with low daily volume, mostly composed of neutral, cautious, and negative signals, indicating that the system was operating within expected environmental stress levels. However, on June 5, there is a sudden and extreme surge in sentiment volume, with the distribution shifting sharply toward critical and low states, replacing earlier balanced patterns. This indicates a rapid escalation of external pressure caused by media exposure and social media amplification. Overall, the pattern suggests a sudden systemic shock, where accumulated external negativity overwhelms normal processing capacity and pushes the system into a high-alert state immediately before the embargo breach.
+
+## 4.11 System vs Agent Behavioral Drift
+
+Next step we visualize system-level sentiment signals and agent-level internal deliberation activity over time. It helps identify mismatches between external system conditions and internal cognitive responses of agents.
+
+First, we extract market-level sentiment from the system rounds to understand how external conditions evolve over time.
+
+```{r}
+system_sentiment <- mc1$rounds %>%
+  mutate(
+    date = as.Date(ymd_hms(hour)),
+    sentiment = environment_context.market_snapshot.sentiment
+  ) %>%
+  filter(!is.na(sentiment)) %>%
+  count(date, sentiment)
+```
+
+Then we aggregate internal agent reasoning activity to measure how much cognitive effort the system is spending each day.
+
+```{r}
+agent_delib <- messages_tbl %>%
+  mutate(date = as.Date(round_time)) %>%
+  filter(!is.na(internal_state.deliberating)) %>%
+  count(date, internal_state.deliberating)
+```
+
+We tag system-level sentiment data so we can distinguish it clearly from agent-level behavior in the final comparison plot.
+
+```{r}
+system_plot <- system_sentiment %>%
+  mutate(source = "System Sentiment")
+
+agent_plot <- agent_delib %>%
+  mutate(source = "Agent Deliberation")
+
+combined <- bind_rows(system_plot, agent_plot)
+```
+
+This plot compares external system sentiment with internal agent reasoning activity to detect mismatches or divergence patterns.
+
+```{r}
+ggplot(combined, aes(x = date, y = n, fill = source)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~ source, ncol = 1, scales = "free_y") +
+  labs(
+    title = "System vs Agent Behavioral Drift",
+    x = "Date",
+    y = "Activity Count"
+  ) +
+  theme_minimal()
+```
+
+This figure compares system-level external sentiment with internal agent deliberation activity over time to examine behavioral alignment within the multi-agent system. Under normal conditions, both signals evolve in a synchronized manner, where increases in external pressure are generally matched by stable and continuous deliberation activity. However, on June 5, a clear behavioral drift emerges. While external sentiment reaches its peak due to severe market and media shocks, internal deliberation remains stable at a low level rather than increasing in response. This mismatch indicates that the system did not scale its reasoning effort under extreme stress conditions. Overall, the pattern suggests a breakdown in adaptive coordination between external perception and internal decision-processing during the critical moment of the embargo breach.
+
+# 5. Conclusion
+
+## 5.1 What happened before the breach?
+
+Based on the visual analytics system, the two weeks leading up to the embargo breach show a clear pattern of gradual system stress followed by sudden structural collapse. The key events can be reconstructed as follows:
+
+-   In the early phase (May 21 onward), the system already operates under external pressure due to public criticism from *SaltWind Journal* and rising attention around #AlgorithmicEviction.
+
+-   During this period, communication volume remains stable, but internal signals such as deliberation and risk keywords begin to increase, showing early stress accumulation.
+
+-   Around May 28, weak public signaling (“Big things coming”) and internal coordination spikes appear. This suggests boundary testing, where sensitive context begins to leak into public-facing channels in a controlled but risky way.
+
+-   From June 1 to June 4, compliance-related activity weakens, and validation requests to the Judge agent drop significantly. This is an important structural warning sign that enforcement coverage is weakening.
+
+-   On June 5 at around 17:00, embargoed merger information is released through automated communication channels.
+
+## 5.2 Key actors and system structure
+
+The system is organized around several interacting agents:
+
+-   **social_media_agent**: main content generator and highest activity node
+
+-   **legal_agent**: supports compliance interpretation and messaging adjustments
+
+-   **pr_agent / intern agents**: assist with communication output
+
+-   **judge_agent**: compliance enforcement layer responsible for embargo control
+
+## 5.3 What caused the embargo breach?
+
+The breach was not the result of a single decision or intentional action. Instead, it emerged from a system-level failure under pressure.
+
+Three core mechanisms explain the failure:
+
+1.  Compliance degradation: Judge validation requests drop sharply before June 5. This means fewer outputs were being checked, so enforcement coverage decreased at the exact moment risk increased.
+
+2.  Behavioral overload: Sentiment signals reach extreme “CRITICAL” levels on June 5, while communication volume spikes. This creates a situation where the system prioritizes speed and response over compliance filtering.
+
+3.  Loss of internal control alignment: Internal deliberation remains stable but does not increase with external stress. This indicates that the system fails to adapt its reasoning capacity under crisis conditions, leading to a mismatch between perception and decision-making.
+
+## 5.4 Was this a deliberate leak?
+
+There is no evidence of deliberate human or agent-driven leakage. Instead, the evidence strongly supports a **system breakdown under pressure**, based on:
+
+-   No direct agent shows intentional disclosure behavior
+
+-   Judge agent is active but overwhelmed and structurally under-connected
+
+-   Compliance checks decrease before the breach, not increase
+
+-   Communication flows bypass structured validation pathways during peak load
+
+## 5.5 Were there early warning signals?
+
+Yes, several leading indicators appear before June 5:
+
+-   Drop in Judge validation requests (loss of enforcement coverage)
+
+-   Rising deliberation activity earlier in the timeline (increasing cognitive load)
+
+-   Spike in risk and governance-related keywords
+
+-   Early weak boundary testing through vague public messaging
+
+-   Divergence between system sentiment and internal reasoning patterns
+
+These signals indicate that the system was already unstable days before the breach, but no corrective intervention was triggered.
+
+## 5.6 Were there prior similar behaviors?
+
+Yes, but they did not escalate into a breach:
+
+-   Earlier increases in deliberation did not lead to output leakage because compliance checks were still functioning
+
+-   Public signals remained vague and did not include explicit sensitive terms
+
+-   Judge agent was still partially integrated into validation flows
+
+The key difference on June 5 is that **multiple failures occurred simultaneously**, not in isolation.
+
+## 
+5.7 Why did earlier signals not trigger action?
+
+Earlier anomalies were not treated as critical because:
+
+-   Risk levels temporarily decreased around May 28, creating a false sense of stability
+
+-   Individual warning signals (e.g., sentiment shifts or deliberation spikes) were not linked into a unified alert system
+
+-   Compliance checks were assumed to be working because Judge remained active, even though its coverage was declining
+
+-   The system lacked a hard stop mechanism when multiple weak signals appeared together
+
+## 5.8 Final conclusion
+
+The embargo breach was not a deliberate leak. It was the result of a **multi-agent system failure under cumulative pressure**. The core issue was not a single malfunctioning component, but a structural imbalance:
+
+-   The social_media_agent became overloaded and centralised
+
+-   The Judge agent remained structurally isolated and under-utilized
+
+-   Compliance checks weakened exactly when external pressure peaked
+
+-   Internal reasoning did not scale with external stress
+
+As a result, sensitive merger information passed through automated communication channels during a period of system-wide overload.
+
+**Final verdict: system breakdown under pressure, not intentional leakage.**
