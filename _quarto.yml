@@ -38,7 +38,13 @@ website:
         - text: "Hands-on Exercise 7B"
           href: "Hands-on_Ex/Hands-on_Ex07B/Hands-on_Ex07B.html"
         - text: "Hands-on Exercise 8"
-          href: "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html"          
+          href: "Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html" 
+        - text: "Hands-on Exercise 9A"
+          href: "Hands-on_Ex/Hands-on_Ex09A/Hands-on_Ex09A.html" 
+        - text: "Hands-on Exercise 9B"
+          href: "Hands-on_Ex/Hands-on_Ex09B/Hands-on_Ex09B.html" 
+        - text: "Hands-on Exercise 9C"
+          href: "Hands-on_Ex/Hands-on_Ex09C/Hands-on_Ex09C.html" 
     - text: "Take-home Exercise"
       menu:
         - text: "Take-home Exercise 1 (Technical Report)"
@@ -60,6 +66,7 @@ website:
           href: "Take-home_Ex/Take-home_Ex01/Executive_Summary.html"
         - text: "Technical Report"
           href: "Take-home_Ex/Take-home_Ex01/Technical_Report.html"
+
 
 format:
   html:

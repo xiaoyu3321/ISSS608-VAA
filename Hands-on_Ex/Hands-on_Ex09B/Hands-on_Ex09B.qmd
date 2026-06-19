@@ -1,0 +1,104 @@
+---
+title: "Hands-on Exercise 9B"
+author: "ZHANG Xiaoyu"
+date: "Jun 18, 2026"
+date-modified: "Jun 19,2026"
+format: html
+code-link: true
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+# **Visualising Geospatial Point Data**
+
+Proportional symbol maps (or graduated symbol maps) use the size of symbols to show differences in values, such as the number of people.
+
+We can create both classed and unclassed maps. Classed maps are called graduated symbols, while unclassed maps are proportional symbols, where symbol size is directly proportional to the values.
+
+In this exercise, you will use the **tmap** package to create a proportional symbol map showing the number of wins at Singapore Pools outlets.
+
+## **1. Getting Started**
+
+Before we get started, we need to ensure that **tmap** package of R and other related R packages have been installed and loaded into R.
+
+```{r}
+pacman::p_load(sf, tmap, tidyverse)
+```
+
+## **2. Data Import and Preparation**
+
+The code chunk below uses *read_csv()* function of **readr** package to import *SGPools_svy21.csv* into R as a tibble data frame called *sgpools*.
+
+```{r}
+sgpools <- read_csv("data/SGPools_svy21.csv")
+```
+
+The code chunk below shows list() is used to do the job.
+
+```{r}
+list(sgpools) 
+```
+
+## **3. Creating a sf data frame from an aspatial data frame**
+
+The code chunk below converts sgpools data frame into a simple feature data frame by using *st_as_sf()* of **sf** packages
+
+```{r}
+sgpools_sf <- st_as_sf(sgpools, 
+                       coords = c("XCOORD", "YCOORD"),
+                       crs= 3414)
+```
+
+We can display the basic information of the newly created sgpools_sf by using the code chunk below.
+
+```{r}
+list(sgpools_sf)
+```
+
+## **4. interactive point symbol map**
+
+The code chunks below are used to create an interactive point symbol map.
+
+```{r}
+tm_shape(sgpools_sf) + 
+  tm_bubbles(fill = "red",
+           size = 1,
+           col = "black",
+           lwd = 1)
+```
+
+To draw a proportional symbol map, we need to assign a numerical variable to the size visual attribute. The code chunks below show that the variable *Gp1Gp2Winnings* is assigned to size visual attribute.
+
+```{r}
+tm_shape(sgpools_sf) + 
+  tm_bubbles(fill = "red",
+             size = "Gp1Gp2 Winnings",
+             col = "black",
+             lwd = 1)
+```
+
+The proportional symbol map can be further improved by using the colour visual attribute. In the code chunks below, *OUTLET_TYPE* variable is used as the colour attribute variable.
+
+```{r}
+tm_shape(sgpools_sf) + 
+  tm_bubbles(fill = "OUTLET TYPE", 
+             size = "Gp1Gp2 Winnings",
+             col = "black",
+             lwd = 1)
+```
+
+An impressive and little-know feature of **tmap**’s view mode is that it also works with faceted plots. The argument *sync* in *tm_facets()* can be used in this case to produce multiple maps with synchronised zoom and pan settings.
+
+```{r}
+tm_shape(sgpools_sf) + 
+  tm_bubbles(fill = "OUTLET TYPE", 
+             size = "Gp1Gp2 Winnings",
+             col = "black",
+             lwd = 1) + 
+  tm_facets(by= "OUTLET TYPE",
+            nrow = 1,
+            sync = TRUE)
+```
